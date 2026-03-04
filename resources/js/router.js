@@ -10,6 +10,11 @@ const routes = [{
         component: () =>
             import ("./Pages/TestRoute.vue"),
     },
+    {
+        path: "/survey",
+        component: () =>
+            import ("./Pages/SurveyRoute.vue"),
+    }
 ];
 
 export default createRouter({
