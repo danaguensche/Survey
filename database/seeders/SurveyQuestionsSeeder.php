@@ -22,5 +22,12 @@ class SurveyQuestionsSeeder extends Seeder
             ['section' => '4', 'question_text' => 'Was hat Ihnen besonders gut gefallen?', 'type' => 'text', 'scale_max' => 0, 'order_index' => 6],
             ['section' => '5', 'question_text' => 'Was könnte verbessert werden?', 'type' => 'text', 'scale_max' => 0, 'order_index' => 7],
         ]);
+
+        foreach ($fragen as $frage) {
+            SurveyQuestion::firstOrCreate(
+                ['order_index' => $frage['order_index']],
+                $frage
+            );
+        }
     }
 }
