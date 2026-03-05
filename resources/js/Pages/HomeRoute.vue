@@ -8,7 +8,7 @@
                     anonyme Umfrage auszufüllen.</p>
                 <p>Bewertung der Maßnahme im aktuellen Ausbildungsjahr</p>
                 <router-link to="/survey"
-                    class="inline-block mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    class="inline-block mt-4 px-6 py-3 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition">
                     Zur Umfrage
                 </router-link>
                 <div class="progress-bar mt-6">
