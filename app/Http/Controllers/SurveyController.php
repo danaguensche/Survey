@@ -12,8 +12,8 @@ class SurveyController extends Controller
     {
         $request->validate([
             'answers'               => 'required|array',
-            'answers.*.question_id' => 'required|exists:survey_questions,id',
-            'answers.*.rating_value' => 'nullable|integer|min:1|max:6',
+            'answers.*.question_id' => 'required|integer',
+            'answers.*.rating_value' => 'nullable|integer|min:1|max:5',
             'answers.*.text_value'  => 'nullable|string|max:2000',
         ]);
 
