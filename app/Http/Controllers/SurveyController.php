@@ -13,7 +13,7 @@ class SurveyController extends Controller
         $request->validate([
             'answers'               => 'required|array',
             'answers.*.question_id' => 'required|integer',
-            'answers.*.rating_value' => 'nullable|integer|min:1|max:5',
+            'answers.*.rating_value' => 'nullable|integer|min:1|max:6',
             'answers.*.text_value'  => 'nullable|string|max:2000',
         ]);
 

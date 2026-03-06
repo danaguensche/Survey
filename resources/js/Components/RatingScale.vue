@@ -27,9 +27,9 @@ export default {
   props: {
       modelValue: { type: Number, default: null },
       label: { type: String, default: '' },
-      lowLabel: { type: String, default: 'Sehr unzufrieden' },
-      highLabel: { type: String, default: 'Sehr zufrieden' },
-      scale: { type: Number, default: 5 }
+      lowLabel: { type: String, default: 'trifft voll zu' },
+      highLabel: { type: String, default: 'trifft überhaupt nicht zu' },
+      scale: { type: Number, default: 6 }
   },
 
   emits: ['update:modelValue'],

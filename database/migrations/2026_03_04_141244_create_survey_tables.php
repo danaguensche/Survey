@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('section');
             $table->text('question_text');
             $table->enum('type', ['rating', 'text']);
-            $table->unsignedTinyInteger('scale_max')->default(5);
+            $table->unsignedTinyInteger('scale_max')->default(6);
             $table->unsignedTinyInteger('order_index');
             $table->timestamps();
         });

@@ -4,13 +4,13 @@
 
         <v-card class="pa-8 mb-6" rounded="xl" elevation="0" border>
             <div class="text-center mb-8">
-                <h1 class="text-h4 font-weight-bold text-high-emphasis mb-2">Zufriedenheitsumfrage für Auszubildende</h1>
-                <p class="text-body-1 text-medium-emphasis">Bewertung der Maßnahme im aktuellen Ausbildungsjahr</p>
+                <h2 class="font-weight-bold mb-2">Ihre Meinung ist uns wichtig!</h2>
+                <p class="text-body-1 text-medium-emphasis">Bitte nehmen Sie sich 5 Minuten Zeit, um diese anonyme
+                    Umfrage auszufüllen.</p>
             </div>
 
             <v-form ref="form" @submit.prevent="submitForm">
 
-                <!-- Angaben zur Person -->
                 <v-sheet class="pa-6 mb-8" variant="tonal" color="blue-lighten-5" rounded="lg">
                     <p class="text-subtitle-1 font-weight-semibold text-primary mb-4">Optional: Angaben zur Person</p>
                     <v-row>
@@ -20,14 +20,13 @@
                                 prepend-inner-icon="mdi-briefcase-outline" rounded="lg" />
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-select v-model="formData.ausbildungsjahr" :items="['1','2','3','4']" label="Ausbildungsjahr"
-                                variant="outlined" density="comfortable" bg-color="surface"
+                            <v-select v-model="formData.ausbildungsjahr" :items="['1', '2', '3', '4']"
+                                label="Ausbildungsjahr" variant="outlined" density="comfortable" bg-color="surface"
                                 prepend-inner-icon="mdi-school-outline" rounded="lg" />
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="formData.datum" type="date" label="Datum"
-                                variant="outlined" density="comfortable" bg-color="surface"
-                                 rounded="lg" />
+                            <v-text-field v-model="formData.datum" type="date" label="Datum" variant="outlined"
+                                density="comfortable" bg-color="surface" rounded="lg" />
                         </v-col>
                         <v-col cols="12" md="6">
                             <v-checkbox v-model="formData.consent" color="blue-darken-2">
@@ -39,37 +38,38 @@
                     </v-row>
                 </v-sheet>
 
-                <!-- Bewertungsfragen -->
-                <v-card v-for="section in ratingQuestions" :key="section.title" class="mb-6" rounded="xl" border elevation="0">
-                    <v-card-item class="bg-primary-lighten-5 pa-5">
-                        <v-card-title class="text-subtitle-1 font-weight-bold">{{ section.title }}</v-card-title>
-                    </v-card-item>
-                    <v-divider />
-                    <v-card-text class="pa-5">
-                        <div v-for="(q, idx) in section.questions" :key="q.id">
-                            <rating-scale :label="q.label" :low-label="q.lowLabel" :high-label="q.highLabel"
-                                v-model="answers[q.id].rating_value" />
-                            <v-divider v-if="idx < section.questions.length - 1" class="my-4" />
-                        </div>
-                    </v-card-text>
-                </v-card>
+                <template v-for="section in sections" :key="section.title">
+                    <v-card class="mb-6" rounded="xl" border elevation="0">
+                        <v-card-item class="bg-primary-lighten-5 pa-5">
+                            <v-card-title class="text-subtitle-1 font-weight-bold">{{ section.title }}</v-card-title>
+                        </v-card-item>
+                        <v-divider />
+                        <v-card-text class="pa-5">
+                            <template v-for="(q, idx) in section.questions" :key="q.id">
 
-                <!-- Freitextfragen -->
-                <v-card v-for="q in textQuestions" :key="q.id" class="mb-6" rounded="xl" border elevation="0">
-                    <v-card-item class="bg-primary-lighten-5 pa-5">
-                        <v-card-title class="text-subtitle-1 font-weight-bold">{{ q.label }}</v-card-title>
-                    </v-card-item>
-                    <v-divider />
-                    <v-card-text class="pa-5">
-                        <v-textarea v-model="answers[q.id].text_value" :placeholder="q.placeholder"
-                            variant="outlined" rows="3" auto-grow hide-details rounded="lg" bg-color="surface" />
-                    </v-card-text>
-                </v-card>
+                                <!-- Rating -->
+                                <div v-if="q.type === 'rating'">
+                                    <rating-scale :label="q.question_text" low-label="Trifft nicht zu"
+                                        high-label="Trifft voll zu" :scale-max="q.scale_max"
+                                        v-model="answers[q.id]" />
+                                </div>
 
-                <!-- Buttons -->
+                                <!-- Text -->
+                                <div v-else-if="q.type === 'text'">
+                                    <p class="text-body-2 mb-2">{{ q.question_text }}</p>
+                                    <v-textarea v-model="answers[q.id]" placeholder="Ihre Antwort..." variant="outlined"
+                                        rows="3" auto-grow hide-details rounded="lg" bg-color="surface" />
+                                </div>
+
+                                <v-divider v-if="idx < section.questions.length - 1" class="my-4" />
+                            </template>
+                        </v-card-text>
+                    </v-card>
+                </template>
+
                 <div class="d-flex justify-space-between align-center flex-wrap ga-3">
-                    <v-btn variant="tonal" color="secondary" prepend-icon="mdi-content-save-outline"
-                        size="large" rounded="lg" @click="saveDraft">
+                    <v-btn variant="tonal" color="secondary" prepend-icon="mdi-content-save-outline" size="large"
+                        rounded="lg" @click="saveDraft">
                         Zwischenspeichern
                     </v-btn>
                     <v-btn type="submit" color="primary" append-icon="mdi-send" size="large" rounded="lg" elevation="2">
@@ -86,72 +86,68 @@
 import axios from 'axios'
 import RatingScale from './RatingScale.vue'
 
-const RATING_IDS = [1, 2, 3, 4, 5]
-const TEXT_IDS = [6, 7]
-
 export default {
     name: 'SurveyForm',
     components: { RatingScale },
 
     data: () => ({
         berufe: ['Metall', 'Büro', 'IT', 'Lager'],
-
-        ratingQuestions: [
-            {
-                title: '1. Rahmenbedingungen und Ausstattung',
-                questions: [
-                    { id: 1, label: 'Die genutzten Räume und Werkstätten waren in ordnungsgemäßem Zustand.' },
-                    { id: 2, label: 'Die technische Ausstattung und Ausbildungsmittel standen mir ausreichend zur Verfügung.' },
-                    { id: 3, label: 'Ich bekam regelmäßige Rückmeldungen zu meinem Lern- und Leistungsstand.' },
-                ]
-            },
-            {
-                title: '2. Wie bewerten Sie die fachliche Kompetenz der Dozenten?',
-                questions: [{ id: 4, lowLabel: 'Sehr unzufrieden', highLabel: 'Sehr zufrieden' }]
-            },
-            {
-                title: '2. Wie bewerten Sie die fachliche Kompetenz der Dozenten?',
-                questions: [{ id: 4, lowLabel: 'Sehr unzufrieden', highLabel: 'Sehr zufrieden' }]
-            },
-        ],
-
-        textQuestions: [
-            { id: 6, label: '4. Was hat Ihnen besonders gut gefallen?', placeholder: 'Ihre Antwort...' },
-            { id: 7, label: '5. Was könnte verbessert werden?', placeholder: 'Ihre Anregungen...' },
-        ],
-
+        sections: [],
+        answers: {},
         formData: { ausbildungsberuf: '', ausbildungsjahr: '', datum: '', consent: false },
-
-        answers: {
-            ...Object.fromEntries(RATING_IDS.map(id => [id, { question_id: id, rating_value: null, text_value: null }])),
-            ...Object.fromEntries(TEXT_IDS.map(id => [id, { question_id: id, rating_value: null, text_value: '' }])),
-        },
     }),
 
     computed: {
+        allQuestions() {
+            return this.sections.flatMap(s => s.questions)
+        },
         progress() {
-            const values = [
-                this.formData.ausbildungsberuf,
-                this.formData.ausbildungsjahr,
-                this.formData.datum,
-                ...Object.values(this.answers).map(a => a.rating_value ?? a.text_value),
-            ]
-            return Math.round(values.filter(v => v !== null && v !== '').length / values.length * 100)
+            if (!this.allQuestions.length) return 0
+            const filled = this.allQuestions.filter(q => {
+                const v = this.answers[q.id]
+                return v !== null && v !== '' && v !== undefined
+            }).length
+            return Math.round(filled / this.allQuestions.length * 100)
         },
     },
 
     methods: {
-        submitForm() {
+        async loadQuestions() {
+            try {
+                const { data } = await axios.get('/api/survey/sections')
+
+                // Fragen nach section gruppieren
+                const sectionMap = {}
+                data.forEach(q => {
+                    if (!sectionMap[q.section]) sectionMap[q.section] = { title: q.section, questions: [] }
+                    sectionMap[q.section].questions.push(q)
+                })
+                this.sections = Object.values(sectionMap)
+
+                // answers initialisieren
+                this.answers = Object.fromEntries(data.map(q => [q.id, q.type === 'text' ? '' : null]))
+            } catch (err) {
+                console.error('Fehler beim Laden der Fragen:', err)
+            }
+        },
+
+        async submitForm() {
             const payload = {
                 ...this.formData,
-                ausbildungsberuf: this.formData.ausbildungsberuf || null,
-                ausbildungsjahr: this.formData.ausbildungsjahr || null,
-                datum: this.formData.datum || null,
-                answers: Object.values(this.answers),
+                answers: this.allQuestions.map(q => ({
+                    question_id: q.id,
+                    rating_value: q.type === 'rating' ? this.answers[q.id] : null,
+                    text_value:   q.type === 'text'   ? this.answers[q.id] : null,
+                })),
             }
-            axios.post('/api/survey', payload)
-                .then(() => { alert('Vielen Dank für Ihre Teilnahme!'); this.resetForm() })
-                .catch(err => { console.error(err.response?.data); alert('Fehler beim Absenden der Umfrage.') })
+            try {
+                await axios.post('/api/survey', payload)
+                alert('Vielen Dank für Ihre Teilnahme!')
+                this.resetForm()
+            } catch (err) {
+                console.error(err.response?.data)
+                alert('Fehler beim Absenden der Umfrage.')
+            }
         },
 
         saveDraft() {
@@ -162,14 +158,12 @@ export default {
         resetForm() {
             this.$refs.form.reset()
             this.formData = { ausbildungsberuf: '', ausbildungsjahr: '', datum: '', consent: false }
-            this.answers = {
-                ...Object.fromEntries(RATING_IDS.map(id => [id, { question_id: id, rating_value: null, text_value: null }])),
-                ...Object.fromEntries(TEXT_IDS.map(id => [id, { question_id: id, rating_value: null, text_value: '' }])),
-            }
+            this.answers = Object.fromEntries(this.allQuestions.map(q => [q.id, q.type === 'text' ? '' : null]))
         },
     },
 
-    mounted() {
+    async mounted() {
+        await this.loadQuestions()
         try {
             const draft = JSON.parse(localStorage.getItem('surveyDraft'))
             if (draft) {
