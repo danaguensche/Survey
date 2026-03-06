@@ -14,6 +14,11 @@ const routes = [{
         path: "/survey",
         component: () =>
             import ("./Pages/SurveyRoute.vue"),
+    },
+    {
+        path: "/evaluation",
+        component: () =>
+            import ("./Pages/EvaluationRoute.vue"),
     }
 ];
 

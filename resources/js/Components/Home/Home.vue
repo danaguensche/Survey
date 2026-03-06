@@ -41,7 +41,7 @@
             <v-card rounded="xl" class="pa-6">
                 <h2 class="text-h6 font-weight-bold mb-6 text-center">Anmelden</h2>
                 <v-form @submit.prevent="submitLogin">
-                    <v-text-field v-model="loginForm.username" label="Benutzername" variant="outlined"
+                    <v-text-field v-model="loginForm.name" label="Benutzername" variant="outlined"
                         prepend-inner-icon="mdi-account-outline" rounded="lg" class="mb-3" />
                     <v-text-field v-model="loginForm.password" label="Passwort" type="password" variant="outlined"
                         prepend-inner-icon="mdi-lock-outline" rounded="lg" class="mb-2" />
@@ -66,13 +66,13 @@ export default {
         loginDialog: false,
         loginLoading: false,
         loginError: '',
-        loginForm: { username: '', password: '' },
+        loginForm: { name: '', password: '' },
     }),
 
     methods: {
         openLogin() {
             this.loginError = ''
-            this.loginForm = { username: '', password: '' }
+            this.loginForm = { name: '', password: '' }
             this.loginDialog = true
         },
 
@@ -85,7 +85,7 @@ export default {
                 this.loginDialog = false
                 this.$router.push('/evaluation')
             } catch {
-                this.loginError = 'E-Mail oder Passwort falsch.'
+                this.loginError = 'Username oder Passwort falsch.'
             } finally {
                 this.loginLoading = false
             }

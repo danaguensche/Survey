@@ -3,9 +3,6 @@
 </template>
 
 <script>
-
-import axios from 'axios';
-import { ref } from 'vue';
 import Home from '../Components/Home/Home.vue';
 
 export default {
