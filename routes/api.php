@@ -3,6 +3,16 @@
 use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\LoginController;
+
+// routes/api.php
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout']);
+
+// Auswertungs-Route schützen
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/survey/results', [SurveyController::class, 'results']);
+});
 
 Route::post('/survey', [SurveyController::class, 'store']);
 Route::get('/survey/questions', [QuestionController::class, 'index']);
