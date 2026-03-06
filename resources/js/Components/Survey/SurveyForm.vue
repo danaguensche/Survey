@@ -1,6 +1,9 @@
 <template>
     <v-container max-width="900">
-        <v-progress-linear :model-value="progress" color="primary" class="mb-8" rounded height="6" />
+        <div
+            style="position: sticky; top: 0; z-index: 100; background: rgb(var(--v-theme-background)); padding: 8px 0;">
+            <v-progress-linear :model-value="progress" color="primary" rounded height="6" />
+        </div>
 
         <v-card class="pa-8 mb-6" rounded="xl" elevation="0" border>
             <div class="text-center mb-8">
@@ -41,7 +44,7 @@
                 <template v-for="section in sections" :key="section.title">
                     <v-card class="mb-6" rounded="xl" border elevation="0">
                         <v-card-item class="bg-primary-lighten-5 pa-5">
-                            <v-card-title class="text-subtitle-1 font-weight-bold">{{ section.title }}</v-card-title>
+                            <v-card-title class="text-title-medium font-weight-bold">{{ section.title }}</v-card-title>
                         </v-card-item>
                         <v-divider />
                         <v-card-text class="pa-5">
@@ -50,8 +53,7 @@
                                 <!-- Rating -->
                                 <div v-if="q.type === 'rating'">
                                     <rating-scale :label="q.question_text" low-label="Trifft nicht zu"
-                                        high-label="Trifft voll zu" :scale-max="q.scale_max"
-                                        v-model="answers[q.id]" />
+                                        high-label="Trifft voll zu" :scale-max="q.scale_max" v-model="answers[q.id]" />
                                 </div>
 
                                 <!-- Text -->
@@ -68,10 +70,6 @@
                 </template>
 
                 <div class="d-flex justify-space-between align-center flex-wrap ga-3">
-                    <v-btn variant="tonal" color="secondary" prepend-icon="mdi-content-save-outline" size="large"
-                        rounded="lg" @click="saveDraft">
-                        Zwischenspeichern
-                    </v-btn>
                     <v-btn type="submit" color="primary" append-icon="mdi-send" size="large" rounded="lg" elevation="2">
                         Umfrage absenden
                     </v-btn>
@@ -103,11 +101,21 @@ export default {
         },
         progress() {
             if (!this.allQuestions.length) return 0
-            const filled = this.allQuestions.filter(q => {
+
+            const formFields = [
+                this.formData.ausbildungsberuf,
+                this.formData.ausbildungsjahr,
+                this.formData.datum,
+            ]
+
+            const filledForm = formFields.filter(v => v !== null && v !== '').length
+            const filledAnswers = this.allQuestions.filter(q => {
                 const v = this.answers[q.id]
                 return v !== null && v !== '' && v !== undefined
             }).length
-            return Math.round(filled / this.allQuestions.length * 100)
+
+            const total = formFields.length + this.allQuestions.length
+            return Math.round((filledForm + filledAnswers) / total * 100)
         },
     },
 
@@ -137,7 +145,7 @@ export default {
                 answers: this.allQuestions.map(q => ({
                     question_id: q.id,
                     rating_value: q.type === 'rating' ? this.answers[q.id] : null,
-                    text_value:   q.type === 'text'   ? this.answers[q.id] : null,
+                    text_value: q.type === 'text' ? this.answers[q.id] : null,
                 })),
             }
             try {
@@ -148,11 +156,6 @@ export default {
                 console.error(err.response?.data)
                 alert('Fehler beim Absenden der Umfrage.')
             }
-        },
-
-        saveDraft() {
-            localStorage.setItem('surveyDraft', JSON.stringify({ formData: this.formData, answers: this.answers }))
-            alert('Zwischengespeichert!')
         },
 
         resetForm() {
@@ -167,8 +170,15 @@ export default {
         try {
             const draft = JSON.parse(localStorage.getItem('surveyDraft'))
             if (draft) {
-                this.formData = draft.formData ?? this.formData
-                this.answers = draft.answers ?? this.answers
+                // Nur laden wenn die IDs noch übereinstimmen
+                const draftIds = Object.keys(draft.answers ?? {}).map(Number).sort().join()
+                const currentIds = this.allQuestions.map(q => q.id).sort().join()
+                if (draftIds === currentIds) {
+                    this.formData = draft.formData ?? this.formData
+                    this.answers = draft.answers ?? this.answers
+                } else {
+                    localStorage.removeItem('surveyDraft')
+                }
             }
         } catch {
             localStorage.removeItem('surveyDraft')

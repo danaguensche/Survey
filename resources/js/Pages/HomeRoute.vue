@@ -1,21 +1,9 @@
 <template>
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8" data-aos="fade-up">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Zufriedenheitsumfrage für Auszubildende der Diakonie
-                    am Campus</h1>
-                <p class="text-gray-600">Ihre Meinung ist uns wichtig! Bitte nehmen Sie sich 5 Minuten Zeit, um diese
-                    anonyme Umfrage auszufüllen.</p>
-                <p>Bewertung der Maßnahme im aktuellen Ausbildungsjahr</p>
-                <router-link to="/survey"
-                    class="inline-block mt-4 px-6 py-3 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition">
-                    Zur Umfrage
-                </router-link>
-                <div class="progress-bar mt-6">
-                    <div class="progress" id="progressBar" style="width: 0%"></div>
-                </div>
-            </div>
-        </div>
+    <div class="p-4">
+        <h1 class="text-2xl font-bold mb-4">Willkommen zum Ausbildungsumfrage</h1>
+        <p class="mb-4">Diese Umfrage richtet sich an Auszubildende in verschiedenen Berufen, um Einblicke in ihre Erfahrungen und Meinungen zu gewinnen. Ihre Teilnahme ist freiwillig und anonym.</p>
+        <p class="mb-4">Bitte klicken Sie auf den Button unten, um zur Umfrage zu gelangen:</p>
+        <a href="/survey" class="inline-block bg-blue-500 text-black px-4 py-2 rounded hover:bg-blue-600 transition">Zur Umfrage</a>
     </div>
 </template>
 

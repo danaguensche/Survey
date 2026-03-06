@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import SurveyForm from '../Components/SurveyForm.vue'
+import SurveyForm from '../Components/Survey/SurveyForm.vue'
 
 export default {
     name: 'SurveyRoute',
