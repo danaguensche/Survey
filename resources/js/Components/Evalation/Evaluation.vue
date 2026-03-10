@@ -188,7 +188,7 @@ export default {
                 this.results = data
             } catch (err) {
                 if (err.response?.status === 401 || err.response?.status === 403) {
-                    this.$router.push('/home')
+                    this.$router.push('/')
                 } else {
                     this.error = 'Fehler beim Laden der Auswertung. Bitte versuche es erneut.'
                 }
@@ -202,10 +202,9 @@ export default {
             try {
                 await axios.post('/api/logout', {}, { withCredentials: true })
             } catch {
-                // Fehler ignorieren – trotzdem weiterleiten
             } finally {
                 this.loggingOut = false
-                this.$router.push('/home')
+                this.$router.push('/')
             }
         },
 
