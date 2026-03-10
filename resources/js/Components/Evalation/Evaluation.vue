@@ -33,12 +33,14 @@
                 <v-card-text class="pa-6">
                     <v-row dense>
                         <v-col cols="12" sm="6">
-                            <v-select v-model="filterBeruf" :items="berufeOptions" label="Ausbildungsberuf" variant="outlined" density="comfortable" bg-color="surface"
-                            prepend-inner-icon="mdi-briefcase-outline" rounded="lg" />
+                            <v-select v-model="filterBeruf" :items="berufeOptions" label="Ausbildungsberuf"
+                                variant="outlined" density="comfortable" bg-color="surface"
+                                prepend-inner-icon="mdi-briefcase-outline" rounded="lg" clearable />
                         </v-col>
                         <v-col cols="12" sm="6">
-                            <v-select v-model="filterJahr" :items="jahrOptions" label="Ausbildungsjahr" variant="outlined" density="comfortable" bg-color="surface"
-                            prepend-inner-icon="mdi-school-outline" rounded="lg" />
+                            <v-select v-model="filterJahr" :items="jahrOptions" label="Ausbildungsjahr"
+                                variant="outlined" density="comfortable" bg-color="surface"
+                                prepend-inner-icon="mdi-school-outline" rounded="lg" clearable />
                         </v-col>
                     </v-row>
 
@@ -58,9 +60,7 @@
             </v-card>
 
             <!-- Sections -->
-            <v-card
-                v-for="(section, sIdx) in results.sections.filter(section => section.title !== 'Hinweise und Verbesserungen')"
-                :key="sIdx" rounded="xl" elevation="0" border class="mb-6">
+            <v-card v-for="(section, sIdx) in ratingSections" :key="sIdx" rounded="xl" elevation="0" class="mb-6">
                 <!-- Section-Header -->
                 <div
                     class="bg-primary-lighten-5 pa-5 rounded-t-xl d-flex align-center justify-space-between flex-wrap ga-2">
@@ -81,9 +81,6 @@
                             <div class="d-flex align-center ga-2 flex-shrink-0">
                                 <v-chip color="primary" size="small" rounded="xl" variant="tonal">
                                     Ø {{ q.average.toFixed(1) }} / {{ q.scale_max }}
-                                </v-chip>
-                                <v-chip color="grey" size="small" rounded="xl" variant="tonal">
-                                    <v-icon start size="14">mdi-account</v-icon>{{ q.count }}
                                 </v-chip>
                             </div>
                         </div>
@@ -120,13 +117,29 @@
                         :class="{ 'mb-6': bIdx < results.text_answers.length - 1 }">
                         <div class="text-body-1 font-weight-medium mb-3">{{ block.question_text }}</div>
                         <v-list density="compact" rounded="xl" bg-color="grey-lighten-4" class="pa-0">
+
                             <v-list-item v-for="(answer, aIdx) in block.answers" :key="aIdx"
                                 :class="{ 'border-b': aIdx < block.answers.length - 1 }">
                                 <template #prepend>
                                     <v-icon size="16" color="primary" class="mr-2">mdi-chevron-right</v-icon>
                                 </template>
-                                <v-list-item-title class="text-body-2 text-wrap">{{ answer }}</v-list-item-title>
+                                <v-list-item-title class="text-body-2 text-wrap">
+                                    {{ answer.text }}
+                                </v-list-item-title>
+                                <template #append>
+                                    <div class="d-flex ga-1 ml-3 flex-shrink-0">
+                                        <v-chip v-if="answer.beruf" size="x-small" color="primary" variant="tonal"
+                                            rounded="xl">
+                                            {{ answer.beruf }}
+                                        </v-chip>
+                                        <v-chip v-if="answer.jahr" size="x-small" color="secondary" variant="tonal"
+                                            rounded="xl">
+                                            Jahr {{ answer.jahr }}
+                                        </v-chip>
+                                    </div>
+                                </template>
                             </v-list-item>
+
                         </v-list>
                         <v-divider v-if="bIdx < results.text_answers.length - 1" class="mt-4" />
                     </div>
@@ -165,6 +178,19 @@ export default {
                 title: `Jahr ${j}`,
                 value: j,
             }))
+        },
+        ratingSections() {
+            if (!this.results) return []
+            return this.results.sections.filter(s => s.title !== 'Hinweise und Verbesserungen')
+        }
+    },
+
+    watch: {
+        filterBeruf() {
+            this.fetchResults()
+        },
+        filterJahr() {
+            this.fetchResults()
         },
     },
 

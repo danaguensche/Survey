@@ -57,9 +57,9 @@ class EvaluationController extends Controller
                         }
 
                         return [
-                            'id'            => $q->id, 
+                            'id'            => $q->id,
                             'question_text' => $q->question_text,
-                            'type'          => 'rating', 
+                            'type'          => 'rating',
                             'scale_max'     => $q->scale_max,
                             'average'       => $count > 0 ? round($vals->avg(), 1) : 0, //Durchschnitt der Bewertung
                             'count'         => $count, //Anzahl der abgegebenen Bewertungen
@@ -80,10 +80,15 @@ class EvaluationController extends Controller
                 'answers'       => $allAnswers
                     ->where('question_id', $q->id)
                     ->whereNotNull('text_value')
-                    ->pluck('text_value')
-                    ->filter() //leere Antworten entfernen
+                    ->filter(fn($a) => filled($a->text_value))
+                    ->map(fn($a) => [
+                        'text'  => $a->text_value,
+                        'beruf' => $a->submission->ausbildungsberuf ?? null,
+                        'jahr'  => $a->submission->ausbildungsjahr  ?? null,
+                    ])
                     ->values(),
             ]);
+
 
         // ALLE Daten um globale Statisiken zu berechnen, z.B. pro Beruf oder Lehrjahr
         $all = SurveySubmission::all();
