@@ -1,24 +1,28 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [{
-        path: "/home",
+        path: "/",
+        name: "HomeRoute",
         component: () =>
             import ("./Pages/HomeRoute.vue"),
     },
     {
-        path: "/test",
-        component: () =>
-            import ("./Pages/TestRoute.vue"),
-    },
-    {
         path: "/survey",
+        name: "SurveyRoute",
         component: () =>
             import ("./Pages/SurveyRoute.vue"),
     },
     {
         path: "/evaluation",
+        name: "EvaluationRoute",
         component: () =>
             import ("./Pages/EvaluationRoute.vue"),
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: "NotFoundRoute",
+        component: () =>
+            import ("./Pages/NotFoundRoute.vue"),
     }
 ];
 

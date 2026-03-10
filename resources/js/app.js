@@ -8,11 +8,14 @@ import * as directives from 'vuetify/directives'
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
-
+import axios from "axios";
 
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 import App from "./App.vue";
+
+axios.defaults.withCredentials = true
+axios.defaults.baseURL = 'http://localhost:8000'
 
 const vuetify = createVuetify({
     components,
