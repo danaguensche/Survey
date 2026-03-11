@@ -46,7 +46,8 @@
                                 <!-- Rating -->
                                 <div v-if="q.type === 'rating'">
                                     <rating-scale :label="q.question_text" low-label="Trifft nicht zu"
-                                        high-label="Trifft voll zu" :scale-max="q.scale_max" v-model="answers[q.id]" />
+                                        high-label="Trifft voll zu" :scale-max="q.scale_max" v-model="answers[q.id]"
+                                        :error="!!ratingErrors[q.id]" />
                                 </div>
 
                                 <!-- Text -->
@@ -69,6 +70,7 @@
                 </div>
 
             </v-form>
+            <confirm-dialog ref="confirmDialog" @close="resetForm" />
         </v-card>
     </v-container>
 </template>
@@ -76,16 +78,18 @@
 <script>
 import axios from 'axios'
 import RatingScale from './RatingScale.vue'
+import ConfirmDialog from './ConfirmDialog.vue';
 
 export default {
     name: 'SurveyForm',
-    components: { RatingScale },
+    components: { RatingScale, ConfirmDialog },
 
     data: () => ({
         berufe: [],
         sections: [],
         answers: {},
         formData: { ausbildungsberuf: '', ausbildungsjahr: '', datum: '', consent: false },
+        ratingErrors: {}
     }),
 
     computed: {
@@ -143,6 +147,30 @@ export default {
         },
 
         async submitForm() {
+            const { valid } = await this.$refs.form.validate()
+            if (!valid) return
+
+            // Rating-Validierung
+            const errors = {}
+            this.allQuestions.forEach(q => {
+                if (q.type === 'rating' && (this.answers[q.id] === null || this.answers[q.id] === undefined)) {
+                    errors[q.id] = true
+                }
+            })
+
+            if (Object.keys(errors).length > 0) {
+                this.ratingErrors = errors
+                // Zum ersten Fehler scrollen
+                this.$nextTick(() => {
+                    document.querySelector('.text-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                })
+                return
+            }
+
+            // Fehler zurücksetzen wenn alles ok
+            this.ratingErrors = {}
+
+
             const payload = {
                 ...this.formData,
                 answers: this.allQuestions.map(q => ({
@@ -153,11 +181,11 @@ export default {
             }
             try {
                 await axios.post('/api/survey', payload)
-                alert('Vielen Dank für Ihre Teilnahme!')
+                this.$refs.confirmDialog.open(true, 'Vielen Dank!', 'Ihre Antworten wurden erfolgreich übermittelt.')
                 this.resetForm()
             } catch (err) {
                 console.error(err.response?.data)
-                alert('Fehler beim Absenden der Umfrage.')
+                this.$refs.confirmDialog.open(false, 'Fehler beim Absenden', 'Bitte versuchen Sie es erneut.')
             }
         },
 
@@ -188,5 +216,18 @@ export default {
             localStorage.removeItem('surveyDraft')
         }
     },
+    watch: {
+        answers: {
+            deep: true,
+            handler(newAnswers) {
+                Object.keys(this.ratingErrors).forEach(id => {
+                    if (newAnswers[id] !== null && newAnswers[id] !== undefined) {
+                        delete this.ratingErrors[id]
+                    }
+                })
+            }
+        }
+    }
+
 }
 </script>

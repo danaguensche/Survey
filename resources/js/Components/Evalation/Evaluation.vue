@@ -1,4 +1,3 @@
-<!-- Evaluation.vue -->
 <template>
     <v-container max-width="960">
 
