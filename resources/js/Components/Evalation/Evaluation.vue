@@ -31,7 +31,7 @@
                 <!-- Filter -->
                 <v-card-text class="pa-6">
                     <v-row dense>
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="12">
                             <v-select v-model="filterBeruf" :items="berufeOptions" label="Ausbildungsberuf"
                                 variant="outlined" density="comfortable" bg-color="surface"
                                 prepend-inner-icon="mdi-briefcase-outline" rounded="lg" clearable />
