@@ -23,11 +23,6 @@
                                 prepend-inner-icon="mdi-briefcase-outline" rounded="lg" />
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-select v-model="formData.ausbildungsjahr" :items="['1', '2', '3', '4']"
-                                label="Ausbildungsjahr" variant="outlined" density="comfortable" bg-color="surface"
-                                prepend-inner-icon="mdi-school-outline" rounded="lg" />
-                        </v-col>
-                        <v-col cols="12" md="6">
                             <v-text-field v-model="formData.datum" type="date" label="Datum" variant="outlined"
                                 density="comfortable" bg-color="surface" rounded="lg" />
                         </v-col>
@@ -89,7 +84,7 @@ export default {
     components: { RatingScale },
 
     data: () => ({
-        berufe: ['Metall', 'Büro', 'IT', 'Lager'],
+        berufe: [],
         sections: [],
         answers: {},
         formData: { ausbildungsberuf: '', ausbildungsjahr: '', datum: '', consent: false },
@@ -120,6 +115,16 @@ export default {
     },
 
     methods: {
+
+        async getApprenticeships() {
+            try {
+                const { data } = await axios.get('/api/apprenticeships')
+                this.berufe = data.map(a => a.title)
+            } catch (err) {
+                console.error('Fehler beim Laden der Ausbildungsberufe:', err)
+            }
+        },
+
         async loadQuestions() {
             try {
                 const { data } = await axios.get('/api/survey/sections')
@@ -159,14 +164,15 @@ export default {
         },
 
         resetForm() {
-            this.$refs.form.reset()
             this.formData = { ausbildungsberuf: '', ausbildungsjahr: '', datum: '', consent: false }
             this.answers = Object.fromEntries(this.allQuestions.map(q => [q.id, q.type === 'text' ? '' : null]))
         },
+
     },
 
     async mounted() {
         await this.loadQuestions()
+        await this.getApprenticeships()
         try {
             const draft = JSON.parse(localStorage.getItem('surveyDraft'))
             if (draft) {

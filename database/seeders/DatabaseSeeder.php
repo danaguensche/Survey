@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SectionSeeder::class,
             SurveyQuestionsSeeder::class,
+            ApprenticeshipSeeder::class,
         ]);
     }
 

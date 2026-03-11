@@ -37,11 +37,6 @@
                                 variant="outlined" density="comfortable" bg-color="surface"
                                 prepend-inner-icon="mdi-briefcase-outline" rounded="lg" clearable />
                         </v-col>
-                        <v-col cols="12" sm="6">
-                            <v-select v-model="filterJahr" :items="jahrOptions" label="Ausbildungsjahr"
-                                variant="outlined" density="comfortable" bg-color="surface"
-                                prepend-inner-icon="mdi-school-outline" rounded="lg" clearable />
-                        </v-col>
                     </v-row>
 
                     <!-- Meta-Chips -->
@@ -51,10 +46,6 @@
                             {{ beruf }}: {{ count }}
                         </v-chip>
                         <v-divider vertical class="mx-2" />
-                        <v-chip v-for="(count, jahr) in results.meta.by_jahr" :key="'j' + jahr" size="small"
-                            variant="tonal" color="secondary">
-                            Jahr {{ jahr }}: {{ count }}
-                        </v-chip>
                     </div>
                 </v-card-text>
             </v-card>
@@ -120,9 +111,6 @@
 
                             <v-list-item v-for="(answer, aIdx) in block.answers" :key="aIdx"
                                 :class="{ 'border-b': aIdx < block.answers.length - 1 }">
-                                <template #prepend>
-                                    <v-icon size="16" color="primary" class="mr-2">mdi-chevron-right</v-icon>
-                                </template>
                                 <v-list-item-title class="text-body-2 text-wrap">
                                     {{ answer.text }}
                                 </v-list-item-title>
@@ -131,10 +119,6 @@
                                         <v-chip v-if="answer.beruf" size="x-small" color="primary" variant="tonal"
                                             rounded="xl">
                                             {{ answer.beruf }}
-                                        </v-chip>
-                                        <v-chip v-if="answer.jahr" size="x-small" color="secondary" variant="tonal"
-                                            rounded="xl">
-                                            Jahr {{ answer.jahr }}
                                         </v-chip>
                                     </div>
                                 </template>
@@ -163,7 +147,6 @@ export default {
             error: null,
             results: null,
             filterBeruf: null,
-            filterJahr: null,
         }
     },
 
@@ -172,13 +155,7 @@ export default {
             if (!this.results) return []
             return Object.keys(this.results.meta.by_beruf)
         },
-        jahrOptions() {
-            if (!this.results) return []
-            return Object.keys(this.results.meta.by_jahr).map(j => ({
-                title: `Jahr ${j}`,
-                value: j,
-            }))
-        },
+
         ratingSections() {
             if (!this.results) return []
             return this.results.sections.filter(s => s.title !== 'Hinweise und Verbesserungen')
@@ -187,9 +164,6 @@ export default {
 
     watch: {
         filterBeruf() {
-            this.fetchResults()
-        },
-        filterJahr() {
             this.fetchResults()
         },
     },
@@ -205,8 +179,6 @@ export default {
             try {
                 const params = {}
                 if (this.filterBeruf) params.beruf = this.filterBeruf
-                if (this.filterJahr) params.jahr = this.filterJahr
-
                 const { data } = await axios.get('/api/survey/results', {
                     withCredentials: true,
                     params,

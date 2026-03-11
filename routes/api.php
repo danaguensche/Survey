@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\ApprenticeshipController;
 
 // routes/api.php
 Route::post('/login', [LoginController::class, 'login']);
@@ -22,3 +23,5 @@ Route::get('/survey/sections', [QuestionController::class, 'questions']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/survey/results', [EvaluationController::class, 'index']);
 });
+
+Route::get('/apprenticeships', [ApprenticeshipController::class, 'index']);
