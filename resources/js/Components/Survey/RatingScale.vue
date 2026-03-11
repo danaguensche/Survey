@@ -25,7 +25,7 @@ export default {
         lowLabel: { type: String, default: 'trifft voll zu' },
         highLabel: { type: String, default: 'trifft überhaupt nicht zu' },
         scale: { type: Number, default: 6 },
-        error: { type: Boolean, default: false }  // NEU
+        error: { type: Boolean, default: false }
     },
     emits: ['update:modelValue'],
     computed: {

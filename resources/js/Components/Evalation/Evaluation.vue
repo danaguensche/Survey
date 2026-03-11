@@ -95,7 +95,7 @@
             <!--Freitextantworten-->
             <v-card v-if="results.text_answers && results.text_answers.length" rounded="xl" elevation="0" border
                 class="mb-6">
-                <div class="bg-primary-lighten-5 pa-5 rounded-t-xl">
+                <div class="pa-5 rounded-t-xl">
                     <span class="text-subtitle-1 font-weight-bold">
                         <v-icon class="mr-2">mdi-comment-text-multiple-outline</v-icon>
                         Freitextantworten
@@ -105,23 +105,24 @@
                 <v-card-text class="pa-5">
                     <div v-for="(block, bIdx) in results.text_answers" :key="bIdx"
                         :class="{ 'mb-6': bIdx < results.text_answers.length - 1 }">
-                        <div class="text-body-1 font-weight-medium mb-3">{{ block.question_text }}</div>
-                        <v-list density="compact" rounded="xl" bg-color="grey-lighten-4" class="pa-0">
+                        <div class="text-title-large pa-5 font-weight-medium">{{ block.question_text }}</div>
+                        <v-list density="compact" rounded="xl" bg-color="grey-lighten-6" class="pa-0">
 
                             <v-list-item v-for="(answer, aIdx) in block.answers" :key="aIdx"
                                 :class="{ 'border-b': aIdx < block.answers.length - 1 }">
-                                <v-list-item-title class="text-body-2 text-wrap">
+
+                                <v-list-item-title class="text-body-2 text-wrap pa-2">
                                     {{ answer.text }}
                                 </v-list-item-title>
-                                <template #append>
-                                    <div class="d-flex ga-1 ml-3 flex-shrink-0">
-                                        <v-chip v-if="answer.beruf" size="x-small" color="primary" variant="tonal"
-                                            rounded="xl">
-                                            {{ answer.beruf }}
-                                        </v-chip>
-                                    </div>
-                                </template>
+
+                                <v-list-item-subtitle v-if="answer.beruf" class="mt-1 pa-2">
+                                    <v-chip size="default" color="primary" variant="tonal" rounded="xl">
+                                        {{ answer.beruf }}
+                                    </v-chip>
+                                </v-list-item-subtitle>
+
                             </v-list-item>
+
 
                         </v-list>
                         <v-divider v-if="bIdx < results.text_answers.length - 1" class="mt-4" />

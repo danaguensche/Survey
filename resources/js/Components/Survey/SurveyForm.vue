@@ -17,7 +17,7 @@
                 <v-sheet class="pa-6 mb-8" variant="tonal" color="blue-lighten-5" rounded="lg">
                     <p class="text-subtitle-1 font-weight-semibold text-primary mb-4">Optional: Angaben zur Person</p>
                     <v-row>
-                        <v-col cols="12" md="6">
+                        <v-col cols="12" md="12">
                             <v-select v-model="formData.ausbildungsberuf" :items="berufe" label="Ausbildungsberuf"
                                 variant="outlined" density="comfortable" bg-color="surface"
                                 prepend-inner-icon="mdi-briefcase-outline" rounded="lg"
@@ -54,7 +54,7 @@
                                 <div v-else-if="q.type === 'text'">
                                     <p class="text-body-2 mb-2">{{ q.question_text }}</p>
                                     <v-textarea v-model="answers[q.id]" placeholder="Ihre Antwort..." variant="outlined"
-                                        rows="3" auto-grow hide-details rounded="lg" bg-color="surface" />
+                                        rows="3" auto-grow rounded="lg" bg-color="surface" :maxlength="2000" :counter="2000" />
                                 </div>
 
                                 <v-divider v-if="idx < section.questions.length - 1" class="my-4" />
