@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SurveySubmission extends Model
 {
-    protected $fillable = ['ausbildungsberuf', 'ausbildungsjahr', 'datum', 'consent'];
+    protected $fillable = ['ausbildungsberuf', 'consent'];
 
     public function answers()
     {

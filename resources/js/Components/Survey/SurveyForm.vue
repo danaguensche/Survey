@@ -20,14 +20,12 @@
                         <v-col cols="12" md="6">
                             <v-select v-model="formData.ausbildungsberuf" :items="berufe" label="Ausbildungsberuf"
                                 variant="outlined" density="comfortable" bg-color="surface"
-                                prepend-inner-icon="mdi-briefcase-outline" rounded="lg" />
+                                prepend-inner-icon="mdi-briefcase-outline" rounded="lg"
+                                :rules="[v => !!v || 'Bitte wählen Sie einen Ausbildungsberuf aus']" />
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="formData.datum" type="date" label="Datum" variant="outlined"
-                                density="comfortable" bg-color="surface" rounded="lg" />
-                        </v-col>
-                        <v-col cols="12" md="6">
-                            <v-checkbox v-model="formData.consent" color="blue-darken-2">
+                            <v-checkbox v-model="formData.consent" color="blue-darken-2"
+                                :rules="[v => !!v || 'Bitte stimmen Sie der Datenverarbeitung zu']">
                                 <template #label>
                                     <span class="text-body-2">Ich stimme der Verarbeitung meiner Daten zu</span>
                                 </template>

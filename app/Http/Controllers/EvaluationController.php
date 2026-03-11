@@ -87,7 +87,7 @@ class EvaluationController extends Controller
             ]);
 
 
-        // ALLE Daten um globale Statisiken zu berechnen, z.B. pro Beruf oder Lehrjahr
+        // ALLE Daten um globale Statisiken zu berechnen
         $all = SurveySubmission::all();
 
         return response()->json([

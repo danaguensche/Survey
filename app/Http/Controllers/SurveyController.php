@@ -20,7 +20,6 @@ class SurveyController extends Controller
 
         $submission = SurveySubmission::create([
             'ausbildungsberuf' => $request->ausbildungsberuf,
-            'datum'            => $request->datum,
             'consent'          => $request->consent,
         ]);
 
