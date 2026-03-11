@@ -21,7 +21,6 @@ return new class extends Migration
         Schema::create('survey_submissions', function (Blueprint $table) {
             $table->id();
             $table->string('ausbildungsberuf')->nullable();
-            $table->unsignedTinyInteger('ausbildungsjahr')->nullable();
             $table->date('datum')->nullable();
             $table->boolean('consent')->default(false);
             $table->timestamps();

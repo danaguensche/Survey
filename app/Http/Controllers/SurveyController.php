@@ -15,13 +15,13 @@ class SurveyController extends Controller
             'answers.*.question_id' => 'required|integer',
             'answers.*.rating_value' => 'nullable|integer|min:1|max:6',
             'answers.*.text_value'  => 'nullable|string|max:2000',
+            'consent'                => 'required|accepted',
         ]);
 
         $submission = SurveySubmission::create([
             'ausbildungsberuf' => $request->ausbildungsberuf,
-            'ausbildungsjahr'  => $request->ausbildungsjahr,
             'datum'            => $request->datum,
-            'consent'          => $request->consent ?? false,
+            'consent'          => $request->consent,
         ]);
 
         foreach ($request->answers as $answer) {

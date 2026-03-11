@@ -12,7 +12,6 @@ class EvaluationController extends Controller
     public function index(Request $request)
     {
         $beruf = $request->query('beruf');
-        $jahr  = $request->query('jahr');
 
 
         //Eloquent-Query Builder mit Where-Bedingung nur wenn Parameter nicht null ist
@@ -20,7 +19,6 @@ class EvaluationController extends Controller
         //gibt Collection von SurveySubmission zurück, jede mit zugehörigen Antworten
         $submissions = SurveySubmission::query()
             ->when($beruf, fn($q) => $q->where('ausbildungsberuf', $beruf))
-            ->when($jahr,  fn($q) => $q->where('ausbildungsjahr', $jahr))
             ->with('answers')
             ->get();
 
@@ -84,7 +82,6 @@ class EvaluationController extends Controller
                     ->map(fn($a) => [
                         'text'  => $a->text_value,
                         'beruf' => $a->submission->ausbildungsberuf ?? null,
-                        'jahr'  => $a->submission->ausbildungsjahr  ?? null,
                     ])
                     ->values(),
             ]);
@@ -99,7 +96,6 @@ class EvaluationController extends Controller
             'meta'         => [
                 'total_responses' => $total,
                 'by_beruf'        => $all->whereNotNull('ausbildungsberuf')->groupBy('ausbildungsberuf')->map->count(),
-                'by_jahr'         => $all->whereNotNull('ausbildungsjahr')->groupBy('ausbildungsjahr')->map->count()->sortKeys(),
             ],
         ]);
     }
