@@ -37,6 +37,11 @@
                                 prepend-inner-icon="mdi-briefcase-outline" rounded="lg" clearable />
                         </v-col>
                     </v-row>
+                    <v-btn color="primary" variant="tonal" rounded="xl" prepend-icon="mdi-comment-text-multiple-outline"
+                        to="/textanswers">
+                        Zu den Textantworten
+                    </v-btn>
+
 
                     <!-- Meta-Chips -->
                     <div class="d-flex flex-wrap ga-2 mt-4">
@@ -48,6 +53,8 @@
                     </div>
                 </v-card-text>
             </v-card>
+
+
 
             <!-- Sections -->
             <v-card v-for="(section, sIdx) in ratingSections" :key="sIdx" rounded="xl" elevation="0" class="mb-6">
@@ -89,47 +96,10 @@
 
                         <v-divider v-if="qIdx < section.questions.length - 1" class="mt-4" />
                     </div>
+
+                    <v-divider class="my-6" />
                 </v-card-text>
             </v-card>
-
-            <!--Freitextantworten-->
-            <v-card v-if="results.text_answers && results.text_answers.length" rounded="xl" elevation="0" border
-                class="mb-6">
-                <div class="pa-5 rounded-t-xl">
-                    <span class="text-subtitle-1 font-weight-bold">
-                        <v-icon class="mr-2">mdi-comment-text-multiple-outline</v-icon>
-                        Freitextantworten
-                    </span>
-                </div>
-
-                <v-card-text class="pa-5">
-                    <div v-for="(block, bIdx) in results.text_answers" :key="bIdx"
-                        :class="{ 'mb-6': bIdx < results.text_answers.length - 1 }">
-                        <div class="text-title-large pa-5 font-weight-medium">{{ block.question_text }}</div>
-                        <v-list density="compact" rounded="xl" bg-color="grey-lighten-6" class="pa-0">
-
-                            <v-list-item v-for="(answer, aIdx) in block.answers" :key="aIdx"
-                                :class="{ 'border-b': aIdx < block.answers.length - 1 }">
-
-                                <v-list-item-title class="text-body-2 text-wrap pa-2">
-                                    {{ answer.text }}
-                                </v-list-item-title>
-
-                                <v-list-item-subtitle v-if="answer.beruf" class="mt-1 pa-2">
-                                    <v-chip size="default" color="primary" variant="tonal" rounded="xl">
-                                        {{ answer.beruf }}
-                                    </v-chip>
-                                </v-list-item-subtitle>
-
-                            </v-list-item>
-
-
-                        </v-list>
-                        <v-divider v-if="bIdx < results.text_answers.length - 1" class="mt-4" />
-                    </div>
-                </v-card-text>
-            </v-card>
-
         </template>
     </v-container>
 </template>

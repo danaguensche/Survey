@@ -19,6 +19,12 @@ const routes = [{
             import ("./Pages/EvaluationRoute.vue"),
     },
     {
+        path: "/textanswers",
+        name: "TextAnswersRoute",
+        component: () =>
+            import ("./Pages/TextAnswersRoute.vue"),
+    },
+    {
         path: '/:pathMatch(.*)*',
         name: "NotFoundRoute",
         component: () =>
