@@ -23,9 +23,10 @@
                         </div>
                     </div>
                     <v-btn color="error" variant="tonal" rounded="xl" prepend-icon="mdi-logout" :loading="loggingOut"
-                        @click="logout">
+                        @click="handleLogout">
                         Abmelden
                     </v-btn>
+
                 </div>
 
                 <!-- Filter -->
@@ -106,6 +107,8 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'pinia'
+import { useAuthStore } from '../../../stores/auth'
 
 export default {
     name: 'Evaluation',
@@ -129,7 +132,7 @@ export default {
         ratingSections() {
             if (!this.results) return []
             return this.results.sections.filter(s => s.title !== 'Hinweise und Verbesserungen')
-        }
+        },
     },
 
     watch: {
@@ -143,6 +146,8 @@ export default {
     },
 
     methods: {
+        ...mapActions(useAuthStore, ['logout']),
+
         async fetchResults() {
             this.loading = true
             this.error = null
@@ -165,15 +170,11 @@ export default {
             }
         },
 
-        async logout() {
+        async handleLogout() {
             this.loggingOut = true
-            try {
-                await axios.post('/api/logout', {}, { withCredentials: true })
-            } catch {
-            } finally {
-                this.loggingOut = false
-                this.$router.push('/')
-            }
+            await this.logout()
+            this.loggingOut = false
+            this.$router.push('/')
         },
 
         sectionAverage(section) {
@@ -190,7 +191,6 @@ export default {
             return Math.round((val / max) * 100)
         },
 
-        // Farb-Gradient: niedrig = rot, mittel = gelb, hoch = grün
         barColor(index, scaleMax) {
             const ratio = index / (scaleMax - 1)
             if (ratio < 0.34) return 'bar-low'
@@ -200,6 +200,7 @@ export default {
     },
 }
 </script>
+
 
 <style scoped>
 .distribution-chart {

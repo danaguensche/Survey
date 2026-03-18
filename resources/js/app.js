@@ -12,6 +12,8 @@ import axios from "axios";
 
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
+import { createPinia } from 'pinia'
+
 import App from "./App.vue";
 
 axios.defaults.withCredentials = true
@@ -33,4 +35,4 @@ const vuetify = createVuetify({
 });
 
 
-createApp(App).use(router).use(vuetify).mount("#app");
+createApp(App).use(router).use(vuetify).use(createPinia()).mount("#app");

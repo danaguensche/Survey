@@ -17,9 +17,10 @@
           </div>
         </div>
         <v-btn color="error" variant="tonal" rounded="xl" prepend-icon="mdi-logout" :loading="loggingOut"
-          @click="logout">
+          @click="handleLogout">
           Abmelden
         </v-btn>
+
       </div>
 
       <!-- Filter -->
@@ -60,9 +61,9 @@
               <v-list-item-title class="text-body-1 text-wrap line-height-1-5 mb-5">
                 {{ answer.text }}
               </v-list-item-title>
-                <v-chip v-if="answer.beruf" size="small" color="primary" variant="tonal" rounded="xl" class="mb-5">
-                  {{ answer.beruf }}
-                </v-chip>
+              <v-chip v-if="answer.beruf" size="small" color="primary" variant="tonal" rounded="xl" class="mb-5">
+                {{ answer.beruf }}
+              </v-chip>
             </v-list-item>
           </v-list>
 
@@ -85,6 +86,8 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'pinia'
+import { useAuthStore } from '../../../stores/auth'
 
 export default {
   name: 'TextAnswers',
@@ -111,6 +114,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(useAuthStore, ['logout']),
+
     async fetchResults() {
       this.loading = true
       this.error = null
@@ -133,16 +138,11 @@ export default {
       }
     },
 
-    async logout() {
+    async handleLogout() {
       this.loggingOut = true
-      try {
-        await axios.post('/api/logout', {}, { withCredentials: true })
-      } catch {
-        // ignore
-      } finally {
-        this.loggingOut = false
-        this.$router.push('/')
-      }
+      await this.logout()
+      this.loggingOut = false
+      this.$router.push('/')
     },
   },
 }
